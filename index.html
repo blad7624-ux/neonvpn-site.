@@ -1,0 +1,569 @@
+ 
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070a16">
+<title>NeonVPN — Cyber Edition</title>
+
+<style>
+:root {
+  --bg: #070a16;
+  --panel: rgba(17, 26, 52, .82);
+  --cyan: #4beaff;
+  --blue: #4285ff;
+  --purple: #a44dff;
+  --muted: #9eaccb;
+  --line: rgba(89, 197, 255, .23);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  color: #f4f7ff;
+  background:
+    radial-gradient(ellipse at 50% -10%, #172c58 0%, transparent 55%),
+    radial-gradient(ellipse at 100% 60%, #241345 0%, transparent 42%),
+    var(--bg);
+  font-family: system-ui, -apple-system, Arial, sans-serif;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: .18;
+  background-image:
+    linear-gradient(rgba(71, 177, 255, .12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(71, 177, 255, .12) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: linear-gradient(to bottom, black, transparent 85%);
+}
+
+.glow {
+  position: fixed;
+  z-index: -1;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  filter: blur(85px);
+  opacity: .22;
+  pointer-events: none;
+  animation: float 9s ease-in-out infinite alternate;
+}
+
+.glow.one {
+  background: #087dff;
+  top: 20%;
+  left: -120px;
+}
+
+.glow.two {
+  background: #9d27ff;
+  right: -130px;
+  top: 58%;
+  animation-delay: -4s;
+}
+
+@keyframes float {
+  from { transform: translateY(-20px) scale(.9); }
+  to { transform: translateY(50px) scale(1.2); }
+}
+
+.app {
+  width: min(100%, 460px);
+  margin: 0 auto;
+  padding: max(24px, env(safe-area-inset-top)) 19px
+           max(24px, env(safe-area-inset-bottom));
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin: 5px 0 26px;
+}
+
+.logo {
+  width: 49px;
+  height: 49px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--cyan);
+  border-radius: 16px;
+  color: var(--cyan);
+  background: #10223b;
+  box-shadow: 0 0 22px #13baff35, inset 0 0 15px #13baff13;
+  font-size: 30px;
+  animation: logoGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes logoGlow {
+  from { box-shadow: 0 0 12px #13baff25; }
+  to { box-shadow: 0 0 27px #13baff70; }
+}
+
+.brand {
+  margin: 0;
+  font-size: clamp(25px, 7vw, 33px);
+  font-weight: 850;
+  letter-spacing: -1.2px;
+  color: var(--cyan);
+  text-shadow: 0 0 22px #18aaff75;
+}
+
+.tagline {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 2px;
+  margin-top: 3px;
+}
+
+.badge {
+  margin-left: auto;
+  flex-shrink: 0;
+  border: 1px solid #37e6b455;
+  background: #0b302d;
+  color: #59f2c0;
+  border-radius: 20px;
+  padding: 7px 9px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.intro {
+  margin: 0 0 22px;
+}
+
+.intro h2 {
+  font-size: clamp(23px, 6vw, 29px);
+  margin: 0 0 8px;
+  line-height: 1.2;
+}
+
+.intro p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.panel {
+  position: relative;
+  overflow: hidden;
+  padding: 23px 17px;
+  border: 1px solid var(--line);
+  border-radius: 26px;
+  background: linear-gradient(145deg, #131e38eF, #0d1429f5);
+  box-shadow: 0 15px 50px #0005, inset 0 1px #ffffff09;
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 65%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  animation: scan 6s linear infinite;
+}
+
+@keyframes scan {
+  to { left: 150%; }
+}
+
+.status-label {
+  text-align: center;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+#status {
+  text-align: center;
+  font-size: 25px;
+  font-weight: 750;
+  margin: 8px 0 2px;
+}
+
+#status.demo {
+  color: #ffc86b;
+}
+
+#status.off {
+  color: #e8efff;
+}
+
+.orb-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 194px;
+  height: 194px;
+  max-width: 100%;
+  margin: 12px auto 14px;
+}
+
+.orbit {
+  position: absolute;
+  inset: 5px;
+  border: 1px solid #3acfff48;
+  border-radius: 50%;
+  animation: spin 14s linear infinite;
+}
+
+.orbit::before,
+.orbit::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--cyan);
+  border-radius: 50%;
+  box-shadow: 0 0 13px var(--cyan);
+}
+
+.orbit::before { top: 20px; left: 25px; }
+.orbit::after { bottom: 22px; right: 20px; background: var(--purple); }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.pulse {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border: 1px solid #3a9dff35;
+  border-radius: 50%;
+  animation: pulse 3s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes pulse {
+  0% { transform: scale(.82); opacity: .9; }
+  100% { transform: scale(1.28); opacity: 0; }
+}
+
+#connect {
+  position: relative;
+  width: 136px;
+  height: 136px;
+  border: 2px solid #63edff;
+  border-radius: 50%;
+  color: white;
+  background: linear-gradient(145deg, #1779ee, #6739ed 75%);
+  box-shadow: 0 0 23px #318cff65, inset 0 0 22px #ffffff17;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 850;
+  letter-spacing: .7px;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .3s, filter .3s;
+}
+
+#connect:active {
+  transform: scale(.94);
+  filter: brightness(1.2);
+}
+
+#connect:focus-visible,
+.country:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 4px;
+}
+
+#connect.demo-button {
+  background: linear-gradient(145deg, #ad6823, #963b8e);
+  border-color: #ffd17a;
+  box-shadow: 0 0 28px #ffb54445;
+}
+
+.country-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 25px 0 12px;
+}
+
+.country-heading h3 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.country-heading span {
+  font-size: 10px;
+  color: var(--cyan);
+  letter-spacing: 1px;
+}
+
+.countries {
+  display: grid;
+  gap: 9px;
+}
+
+.country {
+  width: 100%;
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 13px;
+  border: 1px solid #ffffff0e;
+  border-radius: 16px;
+  background: #ffffff04;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+  transition: background .2s, border-color .2s, transform .2s;
+}
+
+.country:active {
+  transform: scale(.985);
+}
+
+.country.selected {
+  border-color: #4beaff9c;
+  background: linear-gradient(100deg, #14304d, #182344);
+  box-shadow: inset 0 0 20px #1baaff0b, 0 0 16px #1baaff0c;
+}
+
+.flag {
+  font-size: 27px;
+  width: 36px;
+  text-align: center;
+}
+
+.country-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.country-name {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.country-sub {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.check {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #53627e;
+  border-radius: 50%;
+  color: transparent;
+  font-size: 13px;
+}
+
+.selected .check {
+  border-color: var(--cyan);
+  background: var(--cyan);
+  color: #081322;
+}
+
+.notice {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 18px;
+  padding: 13px;
+  border: 1px solid #ffcf6d35;
+  border-radius: 13px;
+  background: #ffcb6b08;
+  color: #c7d0e6;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.notice strong {
+  color: #ffd27d;
+}
+
+footer {
+  padding: 22px 4px 4px;
+  text-align: center;
+  color: #7382a1;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+@media (max-width: 360px) {
+  .app { padding-left: 13px; padding-right: 13px; }
+  .panel { padding: 19px 12px; }
+  .orb-wrap { transform: scale(.92); margin-top: 2px; margin-bottom: 2px; }
+  .tagline { letter-spacing: 1px; font-size: 9px; }
+  .badge { font-size: 9px; padding: 6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="glow one"></div>
+<div class="glow two"></div>
+
+<main class="app">
+  <header>
+    <div class="logo" aria-hidden="true">⬡</div>
+    <div>
+      <h1 class="brand">NeonVPN</h1>
+      <div class="tagline">YOUR CONNECTION · YOUR CHOICE</div>
+    </div>
+    <div class="badge">BETA</div>
+  </header>
+
+  <section class="intro">
+    <h2>Твой цифровой мир.<br>Твои правила.</h2>
+    <p>Выбирай локацию и исследуй новый интерфейс.</p>
+  </section>
+
+  <section class="panel">
+    <div class="status-label">СТАТУС ПРИЛОЖЕНИЯ</div>
+    <div id="status" class="off" aria-live="polite">Не подключено</div>
+
+    <div class="orb-wrap">
+      <div class="orbit"></div>
+      <div class="pulse"></div>
+      <button id="connect" type="button">ПОДКЛЮЧИТЬ</button>
+    </div>
+
+    <div class="country-heading">
+      <h3>🌐 Выбери страну</h3>
+      <span>ЛОКАЦИИ</span>
+    </div>
+
+    <div class="countries" id="countries"></div>
+
+    <div class="notice">
+      <span aria-hidden="true">⚠️</span>
+      <div>
+        <strong>Демонстрационный режим</strong><br>
+        Это визуальный макет. Реальный VPN-сервер не подключён, интернет-трафик не перенаправляется и не защищается этим интерфейсом.
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div>⬡ NEONVPN CYBER EDITION</div>
+    Учебный проект для Android<br>
+    Настоящее VPN-соединение требует отдельной настройки.
+  </footer>
+</main>
+
+<script>
+const locations = [
+  { flag: "🇩🇪", name: "Германия" },
+  { flag: "🇳🇱", name: "Нидерланды" },
+  { flag: "🇺🇸", name: "США" },
+  { flag: "🇫🇷", name: "Франция" },
+  { flag: "🇯🇵", name: "Япония" },
+  { flag: "🇸🇬", name: "Сингапур" }
+];
+
+let selected = 0;
+let demoConnected = false;
+
+const list = document.getElementById("countries");
+const status = document.getElementById("status");
+const connect = document.getElementById("connect");
+
+function renderCountries() {
+  list.replaceChildren();
+
+  locations.forEach((location, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "country" +
+      (index === selected ? " selected" : "");
+    button.setAttribute(
+      "aria-pressed",
+      index === selected ? "true" : "false"
+    );
+
+    const flag = document.createElement("span");
+    flag.className = "flag";
+    flag.textContent = location.flag;
+    flag.setAttribute("aria-hidden", "true");
+
+    const info = document.createElement("span");
+    info.className = "country-info";
+
+    const name = document.createElement("span");
+    name.className = "country-name";
+    name.textContent = location.name;
+
+    const sub = document.createElement("span");
+    sub.className = "country-sub";
+    sub.textContent = "Демо · сервер не настроен";
+
+    info.append(name, document.createElement("br"), sub);
+
+    const check = document.createElement("span");
+    check.className = "check";
+    check.textContent = "✓";
+    check.setAttribute("aria-hidden", "true");
+
+    button.append(flag, info, check);
+
+    button.addEventListener("click", () => {
+      selected = index;
+      renderCountries();
+    });
+
+    list.appendChild(button);
+  });
+}
+
+function updateStatus() {
+  if (demoConnected) {
+    status.textContent = "Демо включено";
+    status.className = "demo";
+    connect.textContent = "ОТКЛЮЧИТЬ";
+    connect.classList.add("demo-button");
+  } else {
+    status.textContent = "Не подключено";
+    status.className = "off";
+    connect.textContent = "ПОДКЛЮЧИТЬ";
+    connect.classList.remove("demo-button");
+  }
+}
+
+connect.addEventListener("click", () => {
+  demoConnected = !demoConnected;
+  updateStatus();
+});
+
+renderCountries();
+updateStatus();
+</script>
+</body>
+</html>
